@@ -1,4 +1,3 @@
+import Player from '@vimeo/player';
 
-// import Player from '@vimeo/player';
-
-// console.log(Player);
+console.log(Player);
