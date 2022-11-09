@@ -6,11 +6,6 @@ import "simplelightbox/dist/simple-lightbox.min.css";
 
 console.log(galleryItems);
 
-
-
-
-
-
 const galleryEl = document.querySelector(".js-gallery");
 
 const markup = galleryItems.map(({
@@ -29,23 +24,9 @@ const markup = galleryItems.map(({
 galleryEl.insertAdjacentHTML('beforeend', markup);
 
 
-const onGallaryImgClick = evt => {
-    evt.preventDefault();
-    const { target } = evt;
-    const largeImage = target.dataset.source;
-       
-    const instance = basicLightbox.create(`
-    <img src="${target.dataset.source}" width="800" height="600">
-`)
-    instance.show()
-    
-    console.log(largeImage);
-};
-galleryEl.addEventListener('click', onGallaryImgClick);
-
-
 const lightbox = new SimpleLightbox('.js-gallery a', {
+    captions: true,
     captionsData: "alt",
-    captionsDelay: 250,
+    captionDelay: 250,
     overlayOpacity:0.9,
 });
