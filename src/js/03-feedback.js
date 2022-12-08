@@ -1,98 +1,47 @@
-// import throttle from 'lodash.throttle';
-
-// const contactEl = document.querySelector('form');
-// const userData = {};
-
-// const fillContactFormFields = () => {
-//     let contactFormDataFromLS;
-//     try {
-//         contactFormDataFromLS = JSON.parse(localStorage.getItem('userData'));
-//         if (contactFormDataFromLS === null) {
-//             return;
-//         }
-//     } catch(err) {
-//         console.log(err);
-//     }
-
-//     for (const prop in contactFormDataFromLS) {
-//         if (contactFormDataFromLS.hasOwnProperty(prop)) {
-//             // console.log(prop);
-//             // console.log(contactFormDataFromLS[prop]);
-
-//             contactEl.elements[prop].value = contactFormDataFromLS[prop];
-//         }
-//     }
-
-//     // contactEl.elements['email'].value = 'Hello';
-//     // contactEl.elements['message'].value = 'Hi';
-// };
-
-// fillContactFormFields();
-
-// const onFormFieldChange = ev => {
-//     const { target } = ev;
-    
-//     const fieldName = target.name;
-//     const fielValue = target.value;
-    
-//     userData[fieldName] = fielValue;
-
-//     localStorage.setItem('userData', JSON.stringify(userData));
-// };
-
-// const onContactFormSubmit = ev => {
-//     ev.preventDefault();
-
-//     localStorage.removeItem('userData');
-//     contactEl.reset();
-// }
-
-// contactEl.addEventListener('change', onFormFieldChange);
-// contactEl.addEventListener('submit', onContactFormSubmit);
 
 import throttle from 'lodash.throttle';
 
-const STORAGE_KEY = 'feedback-form-state';
-const formData = {};
 
-const formEl = document.querySelector('form');
-// console.log(formEl);
-const emailEl = document.querySelector('input');
-// console.log(emailEl);
-const textareaEl = document.querySelector('textarea');
-// console.log(textareaEl);
-const buttonEl = document.querySelector('button');
-// console.log(buttonEl);
+const STORAGE_KEY = 'feedback-form-state'
+const form = document.querySelector('.feedback-form')
 
-formEl.addEventListener('input', throttle(onformEl, 500));
-formEl.addEventListener('submit', onFormSubmit);
+form.addEventListener('input', throttle(onFormInput, 500))
+form.addEventListener('submit', onFormSubmit)
 
-fillForm();
+populateForm()
+
+function onFormInput() {
+  const formData = { email: form.email.value, message: form.message.value }
+
+  const formDataStringified = JSON.stringify(formData)
+  localStorage.setItem(STORAGE_KEY, formDataStringified)
+}
 
 function onFormSubmit(e) {
-    e.preventDefault();
-    formData.email = formEl.elements.email.value;
-    formData.message = formEl.elements.message.value;
-    console.log(formData);
+  e.preventDefault()
 
-    formEl.reset();
-    localStorage.removeItem(STORAGE_KEY);
-};
+  if (e.target.email.value === '') {
+    alert('Please enter your email')
+    return
+  }
+  if (e.target.message.value === '') {
+    alert('Please type your message')
+    return
+  }
 
-function onformEl(e) {
-    formData[e.target.name] = e.target.value;
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(formData));
-};
+  const formDataSubmit = { email: form.email.value, message: form.message.value }
+  console.log(formDataSubmit)
 
-function fillForm() {
-    const saveForm = localStorage.getItem(STORAGE_KEY);
-    if (saveForm) {
-        const parceSaveForm = JSON.parse(saveForm);
+  e.currentTarget.reset()
+  localStorage.removeItem(STORAGE_KEY)
+}
 
-        for (const prop in parceSaveForm) {
-            if (parceSaveForm.hasOwnProperty(prop)) {
-                formEl.elements[prop].value = parceSaveForm[prop];
-            }
-        }
-    }
+function populateForm() {
+  const storageValue = localStorage.getItem(STORAGE_KEY)
+  const storageValueParsed = JSON.parse(storageValue)
+
+  if (storageValueParsed) {
+    form.email.value = storageValueParsed.email
+    form.message.value = storageValueParsed.message
+  }
 }
